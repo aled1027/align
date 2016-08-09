@@ -2,8 +2,12 @@ from libc.stdlib cimport malloc, free
 from calign cimport align_t
 from calign cimport align as calign_
 from numpy cimport ndarray
+import numpy as np
 
-def align(a, b, d_a, d_b, ndarray[short, ndim=2, mode='c'] S not None, local=False, mutual=True):
+
+def align_helper(a, b, d_a, d_b, 
+        ndarray[short, ndim=2, mode='c'] S not None, 
+        local=False, mutual=True):
     """
     Performs sequence alignment. The alignment can either be global or
     local in combination with either mutual or non-mutual.
@@ -79,4 +83,29 @@ def alignment_to_string(al, hex_=False):
             else:
                 return '-'
     return ''.join(map(conv, al))
+
+def align(seq0, seq1, local=False, mutual=True):
+
+    s0 = string_to_alignment(seq0)
+    s1 = string_to_alignment(seq1)
+
+    size = 256 # no idea why this has size 256. Something about a byte?
+
+    scoring_matrix = -np.ones((size, size)) + 3 * np.identity(size)
+    scoring_matrix = scoring_matrix.astype(np.int16)
+    
+    gap_penalty0 = -1
+    gap_penalty1 = -1
+
+    score, align0, align1 = align_helper(s0, s1, gap_penalty0, gap_penalty1, 
+            scoring_matrix, local, mutual)
+
+    out0 = alignment_to_string(align0)
+    out1 = alignment_to_string(align1)
+
+    num_gaps = max(out0.count('-'), out1.count('-'))
+    gap_score = num_gaps / max(len(out0), len(out1))
+
+    return score, gap_score, out0, out1
+
 
