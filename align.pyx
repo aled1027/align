@@ -54,7 +54,10 @@ def align_helper(a, b, d_a, d_b,
             ca[i] = a[i]
         for i in range(len_b):
             cb[i] = b[i]
+        print("About to call calign_")
         al = calign_(len_a, ca, len_b, cb, d_a, d_b, len_S, &S[0,0], local, mutual)
+        print("Called it")
+
     finally:
         free(ca)
         free(cb)

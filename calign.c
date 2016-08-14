@@ -50,11 +50,16 @@ align_t align(size_t len_a, const short* a, size_t len_b, const short* b, short 
     short delete;
     short insert;
     short max_val = 0;
-    short F[len_b + 1][len_a + 1];
     short tmp;
     short* a1;
     short* a2;
     align_t ret;
+
+    // equivalent to short F[len_b + 1][len_a + 1];
+    short **F = malloc((len_b + 1) * sizeof(short*));
+    for (i = 0; i < len_b + 1; i++) {
+        F[i] = malloc((len_a + 1) * sizeof(short));
+    }
 
     // Initialize the matrix
     if (!local) {
@@ -143,11 +148,21 @@ align_t align(size_t len_a, const short* a, size_t len_b, const short* b, short 
         a2[i] = a2[len_al - (i + 1)];
         a2[len_al - (i + 1)] = tmp;
     }
+    
+    // free memory
+    for (i = 0; i < len_b + 1; i++) {
+        free(F[i]);
+        F[i] = NULL;
+    }
+    free(F);
+    F = NULL;
 
+    // Setup for return
     ret.s = max_val;
     ret.len = len_al;
     ret.a1 = a1;
     ret.a2 = a2;
+
     return ret;
 }
 

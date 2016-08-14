@@ -1,3 +1,4 @@
+#!/home/alex/anaconda3/bin/python
 import unittest
 import numpy as np
 import align
@@ -29,6 +30,10 @@ class TestAlign(unittest.TestCase):
         Example on smith-waterman wikipedia page.
         """
 
+        print('')
+        print('')
+        print('test basic')
+
         s0 = 'ACACACTA'
         s1 = 'AGCACACA'
         score, normalized_score, a0, a1 = align.align(s0, s1, local=True)
@@ -40,12 +45,28 @@ class TestAlign(unittest.TestCase):
         #print(gap_percentage)
 
     def test_align(self):
+        print('')
+        print('')
+        print('test align')
         d = _fasta_dict('example.fa')
         r0 = 'm150213_074729_42177R_c100777662550000001823160908051505_s1_p0/70715/9957_22166'
         r1 = 'm150126_093705_42156_c100779662550000001823165208251525_s1_p0/144605/28461_40297'
         size = 2000
         s0 = d[r0][:size]
         s1 = d[r1][:size]
+
+        score, normalized_score, a0, a1 = align.align(s0, s1, local=False)
+        print(normalized_score)
+
+    def test_long_align(self):
+        print('')
+        print('')
+        print('test long')
+        d = _fasta_dict('example.fa')
+        r0 = 'm150213_074729_42177R_c100777662550000001823160908051505_s1_p0/70715/9957_22166'
+        r1 = 'm150126_093705_42156_c100779662550000001823165208251525_s1_p0/144605/28461_40297'
+        s0 = d[r0]
+        s1 = d[r1]
 
         score, normalized_score, a0, a1 = align.align(s0, s1, local=False)
         print(score)
